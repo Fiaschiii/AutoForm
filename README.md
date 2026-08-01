@@ -16,3 +16,5 @@ Tecnologias usadas
 
 Se te interessa, entre em contato comigo pelo meu site: https://miguelfiaschi.netlify.app/
 
+Obrigado!
+
