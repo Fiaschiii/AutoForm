@@ -1,9 +1,10 @@
-😉 Curte automação e quer melhorar o gerenciamento de seus funcionários? Se liga nisso. 😉
+## Curte automação e quer melhorar o gerenciamento de seus funcionários? Se liga nisso. ##
 
 
-🤖 Automação de cadastro para gerenciar funcionários pelo Google Forms usando nosso querido Python 🤖
+Automação de cadastro para gerenciar funcionários pelo Google Forms usando nosso querido Python. 
 
-👨‍💻 Tecnologias usadas 👨‍💻
+Tecnologias usadas
+
 - Windows
 - VsCode
 - Python
