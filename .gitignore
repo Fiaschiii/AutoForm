@@ -1,3 +1,6 @@
+# Arquivos para serem ignorados pelo Git # 
+
+
 # Ambiente virtual
 venv/
 .venv/
