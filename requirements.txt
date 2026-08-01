@@ -1,3 +1,5 @@
+# Libs para rodar o script
+
 pandas
 pyautogui
 playwright
