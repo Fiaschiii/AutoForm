@@ -63,7 +63,7 @@ auto_form/
 ├── requirements.txt                 # Dependências
 └── auxilio_code/
     ├── funcionarios_brasil_150.csv  # Base de exemplo com 150 funcionários
-    └── auxilio.py                   # Script auxiliar para visualizar a base
+    └── tabela.py                    # Script auxiliar para visualizar a base
 ```
 
 ### Formato da planilha

@@ -1,2 +1,4 @@
+# Libs para rodar o script # 
+
 pandas
 playwright
