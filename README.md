@@ -8,8 +8,6 @@
 - VsCode
 - Python
 - Playwright
-- Time
-- Pyautogui (sem uso de escalas de mouse)
 - Pandas
 
 
