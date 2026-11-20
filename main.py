@@ -1,90 +1,49 @@
-import time 
-import pyautogui
-from playwright.sync_api import sync_playwright
+from pathlib import Path
+
 import pandas as pd
-
-
-# leitura dos dados da tabela
-tabela = pd.read_csv("funcionarios_brasil_150.csv")
-
-
+from playwright.sync_api import sync_playwright
 
 # Automação para preenchimento de formulário Google Forms
-print("Início do código...")
+
+URL_FORMULARIO = "https://forms.gle/76cLpDVoDLeUo5qs7"
+ARQUIVO_CSV = Path(__file__).parent / "auxilio_code" / "funcionarios_brasil_150.csv"
+
+# Colunas do CSV na mesma ordem das perguntas do formulário
+COLUNAS = ["Nome", "Sobrenome", "Setor", "ID da Empresa", "Cargo"]
+
+
+def preencher_formulario(page, dados):
+    page.goto(URL_FORMULARIO)
+    perguntas = page.locator('div[role="listitem"]')
+    perguntas.first.wait_for()
+
+    # Cada pergunta tem um único campo (input de resposta curta ou textarea de parágrafo)
+    for indice, valor in enumerate(dados):
+        perguntas.nth(indice).locator('input[type="text"], textarea').fill(valor)
+
+    page.get_by_role("button", name="Enviar").click()
+    # Aguarda a página de confirmação para garantir que a resposta foi registrada
+    page.wait_for_url("**/formResponse**")
+
+
 def main():
-    for linha in tabela.index:
-        # puxar os dados da tabela aqui dentro do loop
-        nome = str(tabela.loc[linha, "Nome"])
-        sobrenome = str(tabela.loc[linha, "Sobrenome"])
-        setor = str(tabela.loc[linha, "Setor"])
-        id_empresa = str(tabela.loc[linha, "ID da Empresa"])
-        cargo = str(tabela.loc[linha, "Cargo"])
+    # dtype=str evita que o ID vire float (ex.: "1001.0"); fillna evita enviar "nan"
+    tabela = pd.read_csv(ARQUIVO_CSV, dtype=str, encoding="utf-8-sig").fillna("")
 
-        with sync_playwright() as p:
-            browser = p.chromium.launch(
-                headless=False,
-                args=["--start-maximized"]
-            )
-            
-            context = browser.new_context(viewport=None)
-            page = context.new_page()
-            page.goto("https://forms.gle/bSTZ11m5g311F6an6")
-            
-            time.sleep(1)
-            pyautogui.hotkey("win", "up")
-            
-            # nome  
-            time.sleep(0.5)
-            page.fill('xpath=//*[@id="mG61Hd"]/div[2]/div/div[2]/div[1]/div/div/div[2]/div/div[1]/div/div[1]/input', nome)
-            
-            # sobrenome
-            time.sleep(0.5)
-            page.fill('xpath=//*[@id="mG61Hd"]/div[2]/div/div[2]/div[2]/div/div/div[2]/div/div[1]/div/div[1]/input', sobrenome)
-            
-            # setor
-            time.sleep(0.5)
-            page.fill('xpath=//*[@id="mG61Hd"]/div[2]/div/div[2]/div[3]/div/div/div[2]/div/div[1]/div[2]/textarea', setor)
-            
-            # id empresa 
-            time.sleep(0.5)
-            page.fill('xpath=//*[@id="mG61Hd"]/div[2]/div/div[2]/div[4]/div/div/div[2]/div/div[1]/div/div[1]/input', id_empresa)
-            
-            # cargo 
-            time.sleep(0.5)
-            page.fill('xpath=//*[@id="mG61Hd"]/div[2]/div/div[2]/div[5]/div/div/div[2]/div/div[1]/div[2]/textarea', cargo)
-            
-            # enviar
-            time.sleep(0.5)
-            page.locator('xpath=//*[@id="mG61Hd"]/div[2]/div/div[3]/div[1]/div[1]/div/span').click()
-            pyautogui.press("home")
-            
+    print("Início do código...")
+    with sync_playwright() as p:
+        browser = p.chromium.launch(headless=False, args=["--start-maximized"])
+        context = browser.new_context(no_viewport=True)
+        page = context.new_page()
+
+        for linha in tabela.index:
+            dados = [tabela.loc[linha, coluna].strip() for coluna in COLUNAS]
+            preencher_formulario(page, dados)
+            print(f"[{linha + 1}/{len(tabela)}] Enviado: {dados[0]} {dados[1]}")
+
+        browser.close()
+    print("Fim do código.")
 
 
-            
-            
-
-
-           
-            
-
-       
-main()
-print("Fim do código.")   
-
-
-
-
-        
-    
-    
-
-
-
-
-    
-
-
-
-
-
-    
+if __name__ == "__main__":
+    main()
